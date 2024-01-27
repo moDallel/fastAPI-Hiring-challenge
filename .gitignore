@@ -15,6 +15,7 @@ challengeenv/
 
 # Ignore local development settings
 *.log
+*.db
 
 
 

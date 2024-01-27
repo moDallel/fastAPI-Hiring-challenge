@@ -2,8 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_db
-from ...db import schemas
-from ...utils import crud
+from ...db import schemas, crud
 from app.utils.useful_functions import *
 
 
@@ -57,7 +56,7 @@ def update_user(email: str, user: schemas.UserUpdate, db: Session = Depends(get_
     return updated_user
 
 
-@router.delete("/users/{email}", response_model=schemas.User)
+@router.delete("/delete_user/{email}", response_model=schemas.User)
 def delete_user(email: str, db: Session = Depends(get_db)):
     deleted_user = crud.delete_user(db, email=email)
     if deleted_user is None:
