@@ -15,4 +15,3 @@ url = URL.create(
 engine = create_engine(url)
 Session = sessionmaker(bind=engine)
 session = Session()
-

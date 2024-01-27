@@ -4,9 +4,7 @@ from pydantic import BaseModel
 class UserBase(BaseModel):
     email: str
     username: str
-    firstName: str
-    lastName: str
-    tel: int
+    age: int
 
 
 class UserCreate(UserBase):
@@ -14,9 +12,11 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    pass
+    email: str = None
+    username: str = None
+    password: str = None
+    age: int = None
 
 
 class User(UserBase):
     id: int
-
