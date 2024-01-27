@@ -1,0 +1,20 @@
+# Ignore the Python virtual environment directory
+challengeenv/
+
+# Ignore any compiled Python files
+*.pyc
+
+# Ignore editor/IDE specific files
+.vscode/
+.idea/
+*.iml
+*.swp
+
+# Ignore environment configuration files
+.env
+
+# Ignore local development settings
+*.log
+
+
+

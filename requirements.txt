@@ -1,0 +1,27 @@
+# requirements.txt
+
+# FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.6+ based on standard Python type hints.
+fastapi
+
+# SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL.
+sqlalchemy
+
+# For making HTTP requests in end-to-end tests
+requests
+
+# Uvicorn provides automatic, reloadable in-process background tasks support.
+# Uvicorn is a lightning-fast ASGI server implementation, using uvloop and httptools.
+uvicorn[standard]
+
+# Pydantic is a data validation and settings management using python type annotations.
+pydantic
+
+# a driver to interact with the Postgres database from Python
+# psycopg2-binary instead of psycopg2 to avoid the warning of renaming the library.
+# In that warning, there’s a recommendation to use the binary version
+psycopg2-binary
+databases[postgresql]
+
+#dependencies for testing
+pytest
+pytest-asyncio
