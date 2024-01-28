@@ -116,6 +116,8 @@ project_name/
 │   ├── __init__.py
 │   └── test_endpoints/
 │       └── test_user.py
+│   └── e2e_test/
+│       └── Hiring_Challenge.postman_collection_v2.1.json
 ├── README.md
 ├── requirements.txt
 └── .gitignore
@@ -164,6 +166,30 @@ The API will be accessible at http://localhost:8000 by default if you don't prec
 ```bash
 pytest
 ```
+
+## Run Postman Tests
+
+Ensure that the FastAPI server is running before proceeding to run the Postman tests.
+
+1. **Import Postman Collection:**
+- Import the provided `HiringChallenge-Collection.json` file into Postman.
+
+2. **Open Imported Collection:**
+- Open the imported collection in Postman.
+
+3. **Check Port Number:**
+    - Open the Postman collection and navigate to the "Collection Variables" tab.
+    - Verify that the `port` variable is set to the correct port number on which the FastAPI server is running.
+
+4. **Execute Requests:**
+For each request in the collection:
+- Click on the "Send" button to execute the request.
+
+5. **Review Response:**
+- Review the response in the Postman interface to ensure it meets the expected criteria.
+
+6. **Inspect Test Results:**
+- Check the "Test Results" tab in Postman to ensure that all assertions pass.
 
 
 
