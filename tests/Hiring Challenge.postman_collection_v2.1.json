@@ -1,0 +1,1398 @@
+{
+	"info": {
+		"_postman_id": "4b480943-fefa-4205-85a1-9c6441f3277b",
+		"name": "Hiring Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23308119"
+	},
+	"item": [
+		{
+			"name": "Get all users",
+			"item": [
+				{
+					"name": "Error handling",
+					"item": [
+						{
+							"name": "offset and limit should be integers",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check if age is an integer\", function () {\r",
+											"    pm.expect(pm.response.code).equals(422)\r",
+											"    if (pm.response.code === 422) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).to.be.an(\"array\");\r",
+											"        pm.expect(responseBody.detail[0].type).equals(\"int_parsing\")\r",
+											"        pm.expect(responseBody.detail[0].msg).equals(\"Input should be a valid integer, unable to parse string as an integer\")\r",
+											"        // Extract details of missing fields\r",
+											"        const typeErrorFields = responseBody.detail\r",
+											"            .filter(detail => detail.type === \"int_parsing\")\r",
+											"            .map(detail => detail.loc[1]);\r",
+											"\r",
+											"        pm.expect(typeErrorFields).to.include(\"limit\");\r",
+											"        pm.expect(typeErrorFields).to.include(\"skip\");\r",
+											"    } else {\r",
+											"        // Unexpected result\r",
+											"        pm.expect.fail(\"Response should have a 422 status code\");\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}{{port}}/users/?skip=ss&limit=ww",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"users",
+										""
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "ss"
+										},
+										{
+											"key": "limit",
+											"value": "ww"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "offset ge 0 and limit ge 1",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check if age is an integer\", function () {\r",
+											"    pm.expect(pm.response.code).equals(422)\r",
+											"    if (pm.response.code === 422) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).to.be.an(\"array\");\r",
+											"        pm.expect(responseBody.detail[0].type).equals(\"greater_than_equal\")\r",
+											"        pm.expect(responseBody.detail[0].msg).equals(\"Input should be greater than or equal to 0\")\r",
+											"        // Extract details of missing fields\r",
+											"        const typeErrorFields = responseBody.detail\r",
+											"            .filter(detail => detail.type === \"greater_than_equal\")\r",
+											"            .map(detail => detail.loc[1]);\r",
+											"\r",
+											"        pm.expect(typeErrorFields).to.include(\"limit\");\r",
+											"        pm.expect(typeErrorFields).to.include(\"skip\");\r",
+											"    } else {\r",
+											"        // Unexpected result\r",
+											"        pm.expect.fail(\"Response should have a 422 status code\");\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}{{port}}/users/?skip=-1&limit=0",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"users",
+										""
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "-1"
+										},
+										{
+											"key": "limit",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "valid request",
+					"item": [
+						{
+							"name": "get all users",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"valid test\", function () {\r",
+											"    pm.expect(pm.response.code).equals(200)\r",
+											"    const responseBody = pm.response.json()\r",
+											"    pm.expect(responseBody).to.be.an(\"array\");\r",
+											"    // Iterate over each object in the array\r",
+											"    responseBody.forEach(function(element) {\r",
+											"        // Test for the required properties in each element\r",
+											"        pm.expect(element).to.have.property('email');\r",
+											"        pm.expect(element).to.have.property('id');\r",
+											"        pm.expect(element).to.have.property('age');\r",
+											"        pm.expect(element).to.have.property('username');\r",
+											"    });\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}{{port}}/users/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all users using offset nd limit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"valid test\", function () {\r",
+											"    pm.expect(pm.response.code).equals(200)\r",
+											"    const responseBody = pm.response.json()\r",
+											"    pm.expect(responseBody).to.be.an(\"array\");\r",
+											"    // Iterate over each object in the array\r",
+											"    responseBody.forEach(function(element) {\r",
+											"        // Test for the required properties in each element\r",
+											"        pm.expect(element).to.have.property('email');\r",
+											"        pm.expect(element).to.have.property('id');\r",
+											"        pm.expect(element).to.have.property('age');\r",
+											"        pm.expect(element).to.have.property('username');\r",
+											"    });\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}{{port}}/users/?skip=1&limit=2",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"users",
+										""
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Create user",
+			"item": [
+				{
+					"name": "valid request",
+					"item": [
+						{
+							"name": "create user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"valid test\", function () {\r",
+											"    pm.expect(pm.response.code).equals(200)\r",
+											"    pm.expect(pm.response.json()).to.have.property('email')\r",
+											"    pm.expect(pm.response.json()).to.have.property('id')\r",
+											"    pm.expect(pm.response.json()).to.have.property('age')\r",
+											"    pm.expect(pm.response.json()).to.have.property('username')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test\",\r\n    \"email\" : \"test@test.com\",\r\n    \"password\" : \"azerty123123\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create second user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"valid test\", function () {\r",
+											"    pm.expect(pm.response.code).equals(200)\r",
+											"    pm.expect(pm.response.json()).to.have.property('email')\r",
+											"    pm.expect(pm.response.json()).to.have.property('id')\r",
+											"    pm.expect(pm.response.json()).to.have.property('age')\r",
+											"    pm.expect(pm.response.json()).to.have.property('username')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"med\",\r\n    \"email\" : \"med@gmail.com\",\r\n    \"password\" : \"azerty123123\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Error handling",
+					"item": [
+						{
+							"name": "username already exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check if Username already exists\", function () {\r",
+											"    pm.expect(pm.response.code).equals(400)\r",
+											"    if (pm.response.code === 400) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"Username already exist\")\r",
+											"    }\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test\",\r\n    \"email\" : \"test1@test.com\",\r\n    \"password\" : \"azerty123\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "email already exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"\r",
+											"pm.test(\"Check if Email already exists\", function () {\r",
+											"    pm.expect(pm.response.code).equals(400)\r",
+											"    if (pm.response.code === 400) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"email already exist\")\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test2\",\r\n    \"email\" : \"test@test.com\",\r\n    \"password\" : \"azerty123\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "email not valid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check if Email already exists\", function () {\r",
+											"    pm.expect(pm.response.code).equals(400)\r",
+											"    if (pm.response.code === 400) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"email not valid\")\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test2\",\r\n    \"email\" : \"testsfs548\",\r\n    \"password\" : \"azerty123\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "password too short",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check if Password is too short\", function () {\r",
+											"    pm.expect(pm.response.code).equals(400)\r",
+											"    if (pm.response.code === 400) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"password too short\")\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test2\",\r\n    \"email\" : \"test22@test.com\",\r\n    \"password\" : \"a\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "age should be integer",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check if age is an integer\", function () {\r",
+											"    pm.expect(pm.response.code).equals(422)\r",
+											"    if (pm.response.code === 422) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).to.be.an(\"array\");\r",
+											"        pm.expect(responseBody.detail[0].type).equals(\"int_parsing\")\r",
+											"        pm.expect(responseBody.detail[0].msg).equals(\"Input should be a valid integer, unable to parse string as an integer\")\r",
+											"        // Extract details of missing fields\r",
+											"        const missingFields = responseBody.detail\r",
+											"            .filter(detail => detail.type === \"int_parsing\")\r",
+											"            .map(detail => detail.loc[1]);\r",
+											"\r",
+											"        pm.expect(missingFields).to.include(\"age\");\r",
+											"\r",
+											"    } else {\r",
+											"        // Unexpected result\r",
+											"        pm.expect.fail(\"Response should have a 422 status code\");\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test2\",\r\n    \"email\" : \"test22@test.com\",\r\n    \"password\" : \"asdlnsdvnsdlvnsdvl\",\r\n    \"age\" : \"8s0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "email is missing",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check for missing email field\", function () {\r",
+											"    pm.expect(pm.response.code).equals(422)\r",
+											"    if (pm.response.code === 422) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).to.be.an(\"array\");\r",
+											"\r",
+											"        // Extract details of missing fields\r",
+											"        const missingFields = responseBody.detail\r",
+											"            .filter(detail => detail.type === \"missing\")\r",
+											"            .map(detail => detail.loc[1]);\r",
+											"\r",
+											"        pm.expect(missingFields).to.include(\"email\");\r",
+											"\r",
+											"        if (missingFields.length > 0) {\r",
+											"            console.log(`Missing fields: ${missingFields.join(\", \")}`);\r",
+											"        }\r",
+											"    } else {\r",
+											"        // Unexpected result\r",
+											"        pm.expect.fail(\"Response should have a 422 status code\");\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"testé1\",\r\n    \"password\" : \"azerty123\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "password is missing",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check for missing password field\", function () {\r",
+											"    pm.expect(pm.response.code).equals(422)\r",
+											"    if (pm.response.code === 422) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).to.be.an(\"array\");\r",
+											"\r",
+											"        // Extract details of missing fields\r",
+											"        const missingFields = responseBody.detail\r",
+											"            .filter(detail => detail.type === \"missing\")\r",
+											"            .map(detail => detail.loc[1]);\r",
+											"\r",
+											"        pm.expect(missingFields).to.include(\"password\");\r",
+											"\r",
+											"        if (missingFields.length > 0) {\r",
+											"            console.log(`Missing fields: ${missingFields.join(\", \")}`);\r",
+											"        }\r",
+											"    } else {\r",
+											"        // Unexpected result\r",
+											"        pm.expect.fail(\"Response should have a 422 status code\");\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test1\",\r\n    \"email\" : \"test@test.com\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "age is missing",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check for missing age field\", function () {\r",
+											"    pm.expect(pm.response.code).equals(422)\r",
+											"    if (pm.response.code === 422) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).to.be.an(\"array\");\r",
+											"\r",
+											"        // Extract details of missing fields\r",
+											"        const missingFields = responseBody.detail\r",
+											"            .filter(detail => detail.type === \"missing\")\r",
+											"            .map(detail => detail.loc[1]);\r",
+											"\r",
+											"        pm.expect(missingFields).to.include(\"age\");\r",
+											"\r",
+											"        if (missingFields.length > 0) {\r",
+											"            console.log(`Missing fields: ${missingFields.join(\", \")}`);\r",
+											"        }\r",
+											"    } else {\r",
+											"        // Unexpected result\r",
+											"        pm.expect.fail(\"Response should have a 422 status code\");\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test1\",\r\n    \"email\" : \"test@test.com\",\r\n    \"password\" : \"azerty123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "username is missing",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check for missing username field\", function () {\r",
+											"    pm.expect(pm.response.code).equals(422)\r",
+											"    if (pm.response.code === 422) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).to.be.an(\"array\");\r",
+											"\r",
+											"        // Extract details of missing fields\r",
+											"        const missingFields = responseBody.detail\r",
+											"            .filter(detail => detail.type === \"missing\")\r",
+											"            .map(detail => detail.loc[1]);\r",
+											"\r",
+											"        pm.expect(missingFields).to.include(\"username\");\r",
+											"\r",
+											"        if (missingFields.length > 0) {\r",
+											"            console.log(`Missing fields: ${missingFields.join(\", \")}`);\r",
+											"        }\r",
+											"    } else {\r",
+											"        // Unexpected result\r",
+											"        pm.expect.fail(\"Response should have a 422 status code\");\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\" : \"test@test.com\",\r\n    \"password\" : \"azerty123\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Delete user",
+			"item": [
+				{
+					"name": "Error handling",
+					"item": [
+						{
+							"name": "delete user inexistant email",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"try deleting inexitant email\", function () {\r",
+											"    pm.expect(pm.response.code).equals(404)\r",
+											"    if (pm.response.code === 404) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"User not found\")\r",
+											"    }\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}{{port}}/delete_user/a@a.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"delete_user",
+										"a@a.com"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "valid request",
+					"item": [
+						{
+							"name": "delete user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"valid test\", function () {\r",
+											"    pm.expect(pm.response.code).equals(200)\r",
+											"    pm.expect(pm.response.json()).to.have.property('email')\r",
+											"    pm.expect(pm.response.json()).to.have.property('id')\r",
+											"    pm.expect(pm.response.json()).to.have.property('age')\r",
+											"    pm.expect(pm.response.json()).to.have.property('username')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}{{port}}/delete_user/test@test.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"delete_user",
+										"test@test.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create user Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"valid test\", function () {\r",
+											"    pm.expect(pm.response.code).equals(200)\r",
+											"    pm.expect(pm.response.json()).to.have.property('email')\r",
+											"    pm.expect(pm.response.json()).to.have.property('id')\r",
+											"    pm.expect(pm.response.json()).to.have.property('age')\r",
+											"    pm.expect(pm.response.json()).to.have.property('username')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test\",\r\n    \"email\" : \"test@test.com\",\r\n    \"password\" : \"azerty123123\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/create_user/",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"create_user",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Update user",
+			"item": [
+				{
+					"name": "Error handling",
+					"item": [
+						{
+							"name": "update user with inexistant email",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"try updating inexitant email\", function () {\r",
+											"    pm.expect(pm.response.code).equals(404)\r",
+											"    if (pm.response.code === 404) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"User not found\")\r",
+											"    }\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"aaa\",\r\n    \"password\":\"vdkniqdnvdqv\",\r\n    \"email\":\"tets@svbds.ssdkn\",\r\n    \"age\":44\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/update_user/a@a.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"update_user",
+										"a@a.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "email already exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"\r",
+											"pm.test(\"Check if Email already exists\", function () {\r",
+											"    pm.expect(pm.response.code).equals(400)\r",
+											"    if (pm.response.code === 400) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"email already exist\")\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test2\",\r\n    \"email\" : \"med@gmail.com\",\r\n    \"password\" : \"azerty123\",\r\n    \"age\" : \"80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/update_user/test@test.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"update_user",
+										"test@test.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "age should be integer",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check if age is an integer\", function () {\r",
+											"    pm.expect(pm.response.code).equals(422)\r",
+											"    if (pm.response.code === 422) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).to.be.an(\"array\");\r",
+											"        pm.expect(responseBody.detail[0].type).equals(\"int_parsing\")\r",
+											"        pm.expect(responseBody.detail[0].msg).equals(\"Input should be a valid integer, unable to parse string as an integer\")\r",
+											"        // Extract details of missing fields\r",
+											"        const missingFields = responseBody.detail\r",
+											"            .filter(detail => detail.type === \"int_parsing\")\r",
+											"            .map(detail => detail.loc[1]);\r",
+											"\r",
+											"        pm.expect(missingFields).to.include(\"age\");\r",
+											"\r",
+											"    } else {\r",
+											"        // Unexpected result\r",
+											"        pm.expect.fail(\"Response should have a 422 status code\");\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"age\" : \"8s0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/update_user/test@test.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"update_user",
+										"test@test.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "password too short",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check if Password is too short\", function () {\r",
+											"    pm.expect(pm.response.code).equals(400)\r",
+											"    if (pm.response.code === 400) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"password too short\")\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"password\" : \"a\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/update_user/test@test.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"update_user",
+										"test@test.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "email not valid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check if Email already exists\", function () {\r",
+											"    pm.expect(pm.response.code).equals(400)\r",
+											"    if (pm.response.code === 400) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"email not valid\")\r",
+											"    }\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\" : \"testsfs548\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/update_user/test@test.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"update_user",
+										"test@test.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "username already exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Check if Username already exists\", function () {\r",
+											"    pm.expect(pm.response.code).equals(400)\r",
+											"    if (pm.response.code === 400) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"Username already exist\")\r",
+											"    }\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"med\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/update_user/test@test.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"update_user",
+										"test@test.com"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "valid request",
+					"item": [
+						{
+							"name": "update user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"valid test\", function () {\r",
+											"    pm.expect(pm.response.code).equals(200)\r",
+											"    pm.expect(pm.response.json()).to.have.property('email')\r",
+											"    pm.expect(pm.response.json()).to.have.property('id')\r",
+											"    pm.expect(pm.response.json()).to.have.property('age')\r",
+											"    pm.expect(pm.response.json()).to.have.property('username')\r",
+											"    pm.expect(pm.response.json().username).equals('new_username_value')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"new_username_value\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}{{port}}/update_user/test@test.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"update_user",
+										"test@test.com"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Get user by email",
+			"item": [
+				{
+					"name": "Error handling",
+					"item": [
+						{
+							"name": "get user with inexistant email",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"try getting user with inexitant email\", function () {\r",
+											"    pm.expect(pm.response.code).equals(404)\r",
+											"    if (pm.response.code === 404) {\r",
+											"        const responseBody = pm.response.json();\r",
+											"        pm.expect(responseBody.detail).equals(\"User not found\")\r",
+											"    }\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}{{port}}/users/a@a.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"users",
+										"a@a.com"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "valid request",
+					"item": [
+						{
+							"name": "get user email",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"valid test\", function () {\r",
+											"    pm.expect(pm.response.code).equals(200)\r",
+											"    pm.expect(pm.response.json()).to.have.property('email')\r",
+											"    pm.expect(pm.response.json()).to.have.property('id')\r",
+											"    pm.expect(pm.response.json()).to.have.property('age')\r",
+											"    pm.expect(pm.response.json()).to.have.property('username')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}{{port}}/users/test@test.com",
+									"host": [
+										"{{base_url}}{{port}}"
+									],
+									"path": [
+										"users",
+										"test@test.com"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:",
+			"type": "string"
+		},
+		{
+			"key": "port",
+			"value": "3000",
+			"type": "string"
+		}
+	]
+}
